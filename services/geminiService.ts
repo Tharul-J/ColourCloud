@@ -1,12 +1,13 @@
 import { GoogleGenAI, Type, Chat } from "@google/genai";
 import { GradientPalette, CustomGenerationOptions } from "../types";
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY });
 
 // Keep the chat session instance in memory for continuity
 let chatSession: Chat | null = null;
 
-const MODEL_ID = "gemini-3-flash-preview";
+// Using lite model for faster responses
+const MODEL_ID = "models/gemini-2.5-flash-lite";
 
 const PALETTE_SCHEMA = {
   type: Type.ARRAY,

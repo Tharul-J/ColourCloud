@@ -10,9 +10,11 @@ export default defineConfig(({ mode }) => {
         host: '0.0.0.0',
       },
       plugins: [react()],
+      // Map GEMINI_API_KEY (from Netlify) to VITE_GEMINI_API_KEY for client-side
       define: {
-        'process.env.API_KEY': JSON.stringify(env.GEMINI_API_KEY),
-        'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY)
+        'import.meta.env.VITE_GEMINI_API_KEY': JSON.stringify(
+          env.VITE_GEMINI_API_KEY || env.GEMINI_API_KEY
+        )
       },
       resolve: {
         alias: {

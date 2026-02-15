@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { generateGradients, generateCuratedPalettes } from './services/geminiService';
 import { GradientPalette, ViewMode } from './types';
 import GradientCard from './components/GradientCard';
+import SkeletonCard from './components/SkeletonCard';
 import { WandIcon, RefreshIcon, PlusIcon, LayoutGridIcon, SparklesIcon } from './components/Icons';
 
 const App: React.FC = () => {
@@ -17,7 +18,7 @@ const App: React.FC = () => {
 
   // Initial load for Home
   useEffect(() => {
-    handleGenerate(8);
+    handleGenerate(6);
   }, []);
 
   // Fetch inspiration on tab switch if empty
@@ -39,7 +40,7 @@ const App: React.FC = () => {
     }
   };
 
-  const handleGenerate = async (count: number = 8) => {
+  const handleGenerate = async (count: number = 6) => {
     setLoading(true);
     setError(null);
     try {
@@ -210,8 +211,8 @@ const App: React.FC = () => {
               )}
 
               {loading ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 animate-pulse">
-                  {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => <div key={i} className="h-64 bg-slate-200 rounded-2xl"></div>)}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                  {[1, 2, 3, 4, 5, 6].map((i) => <SkeletonCard key={i} />)}
                 </div>
               ) : (
                 <>
@@ -221,7 +222,7 @@ const App: React.FC = () => {
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-12">
                     {palettes.map((palette, index) => <GradientCard key={`${palette.name}-${index}`} palette={palette} />)}
-                    {loadingMore && [1, 2, 3, 4].map((i) => <div key={`loading-${i}`} className="h-64 bg-slate-200 rounded-2xl animate-pulse"></div>)}
+                    {loadingMore && [1, 2, 3, 4].map((i) => <SkeletonCard key={`loading-${i}`} />)}
                   </div>
                   {palettes.length > 0 && !loadingMore && (
                     <div className="flex justify-center pb-12">
@@ -259,8 +260,8 @@ const App: React.FC = () => {
             </div>
 
             {loadingInspo && inspirationPalettes.length === 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 animate-pulse">
-                {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => <div key={i} className="h-64 bg-slate-200 rounded-2xl"></div>)}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((i) => <SkeletonCard key={i} />)}
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
