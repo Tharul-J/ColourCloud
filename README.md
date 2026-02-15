@@ -8,7 +8,7 @@ Generate beautiful gradient color palettes instantly using AI. Pick a color, get
 
 <img width="1514" height="907" alt="image" src="https://github.com/user-attachments/assets/0c5db8a1-ff0b-4bbc-b6d4-bc2baa93c487" />
 
-<img width="1320" height="904" alt="image" src="https://github.com/user-attachments/assets/65c1d92a-e6d8-4d55-a971-04c6af03e399" />
+<img width="1327" height="902" alt="image" src="https://github.com/user-attachments/assets/73ee16d0-922b-44e8-b41f-0f788390674e" />
 
 <img width="1355" height="903" alt="image" src="https://github.com/user-attachments/assets/5e7c4671-c138-4bdb-a1a0-6e899d6eb13f" />
 
