@@ -1,0 +1,5 @@
+{
+  "name": "Colour Cloud",
+  "description": "Generate stunning, aesthetically pleasing gradient color palettes based on your selected color using Gemini AI.",
+  "requestFramePermissions": []
+}
