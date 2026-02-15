@@ -18,7 +18,7 @@ const App: React.FC = () => {
 
   // Initial load for Home
   useEffect(() => {
-    handleGenerate(6);
+    handleGenerate(8);
   }, []);
 
   // Fetch inspiration on tab switch if empty
@@ -40,7 +40,7 @@ const App: React.FC = () => {
     }
   };
 
-  const handleGenerate = async (count: number = 6) => {
+  const handleGenerate = async (count: number = 8) => {
     setLoading(true);
     setError(null);
     try {

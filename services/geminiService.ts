@@ -24,8 +24,8 @@ const getAIInstance = () => new GoogleGenAI({ apiKey: getApiKey() });
 // Keep the chat session instance in memory for continuity
 let chatSession: Chat | null = null;
 
-// Using regular model instead of lite (may have separate quota)
-const MODEL_ID = "models/gemini-2.5-flash";
+// Using lite model for faster response times
+const MODEL_ID = "models/gemini-2.5-flash-lite";
 
 const PALETTE_SCHEMA = {
   type: Type.ARRAY,
