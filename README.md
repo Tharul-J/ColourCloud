@@ -47,19 +47,8 @@ Generate beautiful gradient color palettes instantly using AI. Pick a color, get
    npm run build
    ```
 
-## 🌐 Deploy to Netlify
 
-1. Push to GitHub
-2. Import project on [Netlify](https://netlify.com)
-3. Add environment variable: `VITE_GEMINI_API_KEY`
-4. Deploy!
-
-Build settings are auto-configured via `netlify.toml`.
-
-## 👨‍💻 Author
-
-**Tharul Jayasundara**
-- GitHub: [@Tharul-J](https://github.com/Tharul-J)
+- By: [@Tharul-J](https://github.com/Tharul-J)
 
 ## 📝 License
 
