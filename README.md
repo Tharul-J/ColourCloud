@@ -2,6 +2,9 @@
 
 Generate beautiful gradient color palettes instantly using AI. Pick a color, get inspired.
 
+▶️ Live Demo - https://colourcloud.netlify.app
+---
+
 <img width="1919" height="589" alt="image" src="https://github.com/user-attachments/assets/d634b382-9ccd-41a5-8d25-d3d17716a84b" />
 
 <img width="1514" height="907" alt="image" src="https://github.com/user-attachments/assets/0c5db8a1-ff0b-4bbc-b6d4-bc2baa93c487" />
