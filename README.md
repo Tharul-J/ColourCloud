@@ -3,7 +3,6 @@
 Generate beautiful gradient color palettes instantly using AI. Pick a color, get inspired.
 
 ▶️ Live Demo - https://colourcloud.netlify.app
----
 
 <img width="1919" height="589" alt="image" src="https://github.com/user-attachments/assets/d634b382-9ccd-41a5-8d25-d3d17716a84b" />
 
@@ -16,19 +15,18 @@ Generate beautiful gradient color palettes instantly using AI. Pick a color, get
 ------
 ## ✨ Features
 
-- **AI-Powered Generation** - Uses Google Gemini to create unique gradient palettes
+- **AI-Powered Generation** - Uses Google Gemini AI to create unique gradient palettes
 - **Fast & Responsive** - Optimized with skeleton loaders and lite AI model
 - **Copy CSS Code** - Export gradients directly to your projects
-- **Custom Generation** - Specify mood, theme, and style preferences
 - **Beautiful UI** - Modern, intuitive interface with smooth animations
 
 ## 🚀 Tech Stack
 
 - React 19 + TypeScript
 - Vite
-- Google Gemini AI API
 - Tailwind CSS
-- Netlify
+- Google Gemini AI API
+
 
 ## 🛠️ Setup
 
@@ -59,9 +57,8 @@ Generate beautiful gradient color palettes instantly using AI. Pick a color, get
    npm run build
    ```
 
-
+--------------------------
 - By: [@Tharul-J](https://github.com/Tharul-J)
+  
+- License - MIT
 
-## 📝 License
-
-MIT
