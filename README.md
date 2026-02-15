@@ -1,47 +1,66 @@
-# ColourCloud
+# 🎨 ColourCloud
 
-A simple website that generates beautiful gradient colour palettes based on your selected colour, powered by Google's Gemini AI.
+Generate beautiful gradient color palettes instantly using AI. Pick a color, get inspired.
 
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+## ✨ Features
 
-## Features
+- **AI-Powered Generation** - Uses Google Gemini to create unique gradient palettes
+- **Fast & Responsive** - Optimized with skeleton loaders and lite AI model
+- **Copy CSS Code** - Export gradients directly to your projects
+- **Custom Generation** - Specify mood, theme, and style preferences
+- **Beautiful UI** - Modern, intuitive interface with smooth animations
 
-- Generate AI-powered gradient palettes from any base color
-- Interactive chat with AI for custom gradient requests
-- Export gradients as CSS code
-- Responsive design with modern UI
+## 🚀 Tech Stack
 
-## Run Locally
+- React 19 + TypeScript
+- Vite
+- Google Gemini AI API
+- Tailwind CSS
+- Netlify
 
-**Prerequisites:** Node.js
+## 🛠️ Setup
 
-1. Install dependencies:
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/Tharul-J/ColourCloud.git
+   cd ColourCloud
+   ```
+
+2. Install dependencies:
    ```bash
    npm install
    ```
 
-2. Create a `.env` file and add your Gemini API key:
+3. Create a `.env` file:
+   ```env
+   VITE_GEMINI_API_KEY=your_api_key_here
    ```
-   GEMINI_API_KEY=your_api_key_here
-   ```
+   Get your API key from [Google AI Studio](https://aistudio.google.com/app/apikey)
 
-3. Run the development server:
+4. Run locally:
    ```bash
    npm run dev
    ```
 
-4. Build for production:
+5. Build for production:
    ```bash
    npm run build
    ```
 
-## Deploy to Netlify
+## 🌐 Deploy to Netlify
 
-1. Push this repository to GitHub
-2. Connect to Netlify
-3. Add `GEMINI_API_KEY` environment variable in Netlify settings
+1. Push to GitHub
+2. Import project on [Netlify](https://netlify.com)
+3. Add environment variable: `VITE_GEMINI_API_KEY`
 4. Deploy!
 
-View the original app in AI Studio: https://ai.studio/apps/drive/1pynaK1HBbDD0MsnBU3aa0Ya375Ct4FFn
+Build settings are auto-configured via `netlify.toml`.
+
+## 👨‍💻 Author
+
+**Tharul Jayasundara**
+- GitHub: [@Tharul-J](https://github.com/Tharul-J)
+
+## 📝 License
+
+MIT
