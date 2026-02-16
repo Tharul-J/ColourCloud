@@ -23,4 +23,4 @@ export interface ChatMessage {
   text: string;
 }
 
-export type ViewMode = 'home' | 'custom' | 'inspiration' | 'bot';
+export type ViewMode = 'home' | 'custom' | 'inspiration' | 'bot' | 'favorites';

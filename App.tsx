@@ -1,22 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import { generateGradients, generateCuratedPalettes } from './services/geminiService';
+import { getFavorites, addFavorite, removeFavorite, isFavorite } from './services/favoritesService';
 import { GradientPalette, ViewMode } from './types';
 import GradientCard from './components/GradientCard';
 import SkeletonCard from './components/SkeletonCard';
 import DetailView from './components/DetailView';
-import { WandIcon, RefreshIcon, PlusIcon, LayoutGridIcon, SparklesIcon } from './components/Icons';
+import { WandIcon, RefreshIcon, PlusIcon, LayoutGridIcon, SparklesIcon, HeartIcon } from './components/Icons';
 
 const App: React.FC = () => {
   const [started, setStarted] = useState<boolean>(false);
   const [baseColor, setBaseColor] = useState<string>('#6366f1');
   const [palettes, setPalettes] = useState<GradientPalette[]>([]);
   const [inspirationPalettes, setInspirationPalettes] = useState<GradientPalette[]>([]);
+  const [favorites, setFavorites] = useState<GradientPalette[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [loadingInspo, setLoadingInspo] = useState<boolean>(false);
   const [loadingMore, setLoadingMore] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [view, setView] = useState<ViewMode>('home');
   const [selectedPalette, setSelectedPalette] = useState<GradientPalette | null>(null);
+
+  // Load favorites on mount
+  useEffect(() => {
+    setFavorites(getFavorites());
+  }, []);
 
   // Initial load for Home
   useEffect(() => {
@@ -71,6 +78,16 @@ const App: React.FC = () => {
   const handleRandomizeColor = () => {
     const randomColor = '#' + Math.floor(Math.random()*16777215).toString(16).padStart(6, '0');
     setBaseColor(randomColor);
+  };
+
+  const handleToggleFavorite = (palette: GradientPalette) => {
+    if (isFavorite(palette)) {
+      removeFavorite(palette);
+    } else {
+      addFavorite(palette);
+    }
+    // Refresh favorites state
+    setFavorites(getFavorites());
   };
 
   const AnimatedText = ({ text }: { text: string }) => (
@@ -146,6 +163,19 @@ const App: React.FC = () => {
               >
                 <SparklesIcon className="w-5 h-5" />
                 <span className="hidden sm:inline">Inspiration</span>
+              </button>
+              
+              <button 
+                onClick={() => setView('favorites')}
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-lg font-semibold transition-colors relative ${view === 'favorites' ? 'bg-indigo-50 text-indigo-600' : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50'}`}
+              >
+                <HeartIcon className="w-5 h-5" filled={view === 'favorites'} />
+                <span className="hidden sm:inline">Favorites</span>
+                {favorites.length > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                    {favorites.length}
+                  </span>
+                )}
               </button>
             </div>
           </div>
@@ -233,6 +263,8 @@ const App: React.FC = () => {
                         key={`${palette.name}-${index}`} 
                         palette={palette}
                         onViewDetails={() => setSelectedPalette(palette)}
+                        isFavorited={isFavorite(palette)}
+                        onToggleFavorite={() => handleToggleFavorite(palette)}
                       />
                     ))}
                     {loadingMore && [1, 2, 3, 4].map((i) => <SkeletonCard key={`loading-${i}`} />)}
@@ -283,6 +315,51 @@ const App: React.FC = () => {
                     key={`inspo-${index}`} 
                     palette={palette}
                     onViewDetails={() => setSelectedPalette(palette)}
+                    isFavorited={isFavorite(palette)}
+                    onToggleFavorite={() => handleToggleFavorite(palette)}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* FAVORITES VIEW */}
+        {view === 'favorites' && (
+          <div className="max-w-7xl mx-auto px-4 py-10">
+            <div className="flex justify-between items-end mb-8">
+              <div>
+                <h1 className="text-3xl font-bold text-slate-900 mb-2">Your Favorites</h1>
+                <p className="text-slate-600">
+                  {favorites.length === 0 
+                    ? 'No favorites yet. Click the heart icon on any palette to save it here!' 
+                    : `${favorites.length} saved ${favorites.length === 1 ? 'palette' : 'palettes'}`
+                  }
+                </p>
+              </div>
+            </div>
+
+            {favorites.length === 0 ? (
+              <div className="text-center py-20">
+                <HeartIcon className="w-20 h-20 mx-auto text-slate-300 mb-4" />
+                <h2 className="text-2xl font-bold text-slate-800 mb-2">No Favorites Yet</h2>
+                <p className="text-slate-600 mb-8">Start exploring and save your favorite gradients!</p>
+                <button
+                  onClick={() => setView('home')}
+                  className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white px-8 py-3 rounded-xl font-semibold transition-all"
+                >
+                  Explore Palettes
+                </button>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {favorites.map((palette, index) => (
+                  <GradientCard 
+                    key={`fav-${index}`} 
+                    palette={palette}
+                    onViewDetails={() => setSelectedPalette(palette)}
+                    isFavorited={true}
+                    onToggleFavorite={() => handleToggleFavorite(palette)}
                   />
                 ))}
               </div>

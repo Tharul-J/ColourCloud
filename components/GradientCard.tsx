@@ -1,13 +1,20 @@
 import React, { useState } from 'react';
 import { GradientPalette } from '../types';
-import { CopyIcon, CheckIcon, ListIcon } from './Icons';
+import { CopyIcon, CheckIcon, ListIcon, HeartIcon } from './Icons';
 
 interface GradientCardProps {
   palette: GradientPalette;
   onViewDetails?: () => void;
+  isFavorited?: boolean;
+  onToggleFavorite?: () => void;
 }
 
-const GradientCard: React.FC<GradientCardProps> = ({ palette, onViewDetails }) => {
+const GradientCard: React.FC<GradientCardProps> = ({ 
+  palette, 
+  onViewDetails, 
+  isFavorited = false,
+  onToggleFavorite 
+}) => {
   const [copied, setCopied] = useState<string | null>(null);
 
   const gradientStyle = {
@@ -26,6 +33,24 @@ const GradientCard: React.FC<GradientCardProps> = ({ palette, onViewDetails }) =
 
   return (
     <div className="group relative bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden border border-slate-100 flex flex-col h-full">
+      {/* Favorite Button - Top Right */}
+      {onToggleFavorite && (
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            onToggleFavorite();
+          }}
+          className={`absolute top-3 right-3 z-20 p-2 rounded-full backdrop-blur-sm transition-all duration-300 ${
+            isFavorited 
+              ? 'bg-red-500 text-white shadow-lg scale-100 hover:scale-110' 
+              : 'bg-white/80 text-slate-400 hover:text-red-500 hover:bg-white hover:scale-110'
+          }`}
+          title={isFavorited ? 'Remove from favorites' : 'Add to favorites'}
+        >
+          <HeartIcon className="w-5 h-5" filled={isFavorited} />
+        </button>
+      )}
+      
       {/* Gradient Preview Area */}
       <div 
         className="h-48 w-full transition-transform duration-500 group-hover:scale-105"
