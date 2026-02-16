@@ -57,29 +57,9 @@ Generate beautiful gradient color palettes instantly using color theory algorith
 - **Canvas API** - Client-side image generation
 - **localStorage** - Browser-based favorites storage
 
-## 🎯 How to Use
 
-### Generate Palettes
-1. Pick a base color or randomize
-2. Get 8 instant AI-quality gradients
-3. View more with "See More" (unlimited)
+## ✅ Explore Sections
 
-### Customize & Edit
-1. Hover over any palette to see quick actions
-2. Click **Edit** to open the palette editor
-3. Change colors with color picker or hex input
-4. Reorder colors using ↑↓ arrows
-5. Add/remove colors (2-10 range)
-6. Edit name, description, and gradient direction
-7. Save your changes
-
-### Save & Share
-1. Click **❤️** to save favorites (stored in browser)
-2. Click **PNG** to download as 1080x1080px image
-3. Click **CSS** to copy code for your projects
-4. Click **Info** for detailed color values (HEX/RGB/HSL)
-
-### Explore
 - **Home** - Generate custom palettes from your color
 - **Inspiration** - Browse curated professional palettes
 - **Favorites** - Access your saved palettes anytime
@@ -110,9 +90,6 @@ Generate beautiful gradient color palettes instantly using color theory algorith
 
 **That's it!** No API keys, no configuration needed. Just clone and run! 🚀
 
-## 🎨 How It Works
-
-ColourCloud uses **professional color theory algorithms with cinematic-quality grading**:
 
 ### 🔬 Color Harmony Algorithms
 
