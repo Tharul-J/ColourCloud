@@ -1,6 +1,8 @@
 # 🎨 ColourCloud
 
-Generate beautiful gradient color palettes instantly using AI. Pick a color, get inspired.
+Generate beautiful gradient color palettes instantly using color theory algorithms. Pick a color, get inspired.
+
+⚡ **Unlimited • Instant • Free Forever**
 
 ▶️ Live Demo - https://colourcloud.netlify.app
 
@@ -15,17 +17,20 @@ Generate beautiful gradient color palettes instantly using AI. Pick a color, get
 ------
 ## ✨ Features
 
-- **AI-Powered Generation** - Uses Google Gemini AI to create unique gradient palettes
-- **Fast & Responsive** - Optimized with skeleton loaders and lite AI model
-- **Copy CSS Code** - Export gradients directly to your projects
-- **Beautiful UI** - Modern, intuitive interface with smooth animations
+- **🎨 Color Theory Algorithms** - 11 professional color harmony generators (Analogous, Complementary, Triadic, Monochromatic, Split Complementary, Tetradic, Vibrant, Pastel, Warm, Cool, Earthy)
+- **⚡ Instant Generation** - No API calls, unlimited usage, zero latency
+- **💰 100% Free** - No API keys, no quotas, no costs
+- **📋 Copy CSS Code** - Export gradients directly to your projects
+- **🎯 Smart Naming** - Auto-generated creative palette names
+- **🌈 Beautiful UI** - Modern, intuitive interface with skeleton loaders
+- **🤖 Color Assistant** - Built-in chatbot for color theory advice
 
 ## 🚀 Tech Stack
 
 - React 19 + TypeScript
 - Vite
 - Tailwind CSS
-- Google Gemini AI API
+- **colord** - Advanced color manipulation library
 
 
 ## 🛠️ Setup
@@ -41,21 +46,31 @@ Generate beautiful gradient color palettes instantly using AI. Pick a color, get
    npm install
    ```
 
-3. Create a `.env` file:
-   ```env
-   VITE_GEMINI_API_KEY=your_api_key_here
-   ```
-   Get your API key from [Google AI Studio](https://aistudio.google.com/app/apikey)
-
-4. Run locally:
+3. Run locally:
    ```bash
    npm run dev
    ```
 
-5. Build for production:
+4. Build for production:
    ```bash
    npm run build
    ```
+
+**That's it!** No API keys, no configuration needed. Just clone and run! 🚀
+
+## 🎨 How It Works
+
+ColourCloud uses **pure color theory algorithms** to generate harmonious palettes:
+
+- **Analogous** - Adjacent colors on the color wheel for smooth harmonies
+- **Complementary** - Opposite colors for bold contrast
+- **Triadic** - Three evenly-spaced colors for balanced compositions
+- **Monochromatic** - Elegant variations of a single hue
+- **Split Complementary** - Sophisticated three-color harmony
+- **Tetradic** - Rich four-color square combinations
+- **Vibrant/Pastel/Warm/Cool/Earthy** - Mood-based color treatments
+
+All palettes follow professional color theory principles used by designers worldwide!
 
 --------------------------
 - By: [@Tharul-J](https://github.com/Tharul-J)
