@@ -9,6 +9,12 @@ const API_KEYS = [
 ].filter(Boolean); // Remove undefined keys
 
 let currentKeyIndex = 0;
+let lastRequestTime = 0;
+const MIN_REQUEST_INTERVAL = 2000; // 2 seconds between requests
+
+// Simple cache to avoid repeated API calls
+const cache = new Map<string, { data: any; timestamp: number }>();
+const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 
 // Get current API key and rotate
 const getApiKey = () => API_KEYS[currentKeyIndex % API_KEYS.length];
@@ -17,6 +23,18 @@ const getApiKey = () => API_KEYS[currentKeyIndex % API_KEYS.length];
 const rotateApiKey = () => {
   currentKeyIndex++;
   console.log(`Rotated to API key ${(currentKeyIndex % API_KEYS.length) + 1}`);
+};
+
+// Rate limiting check
+const checkRateLimit = async () => {
+  const now = Date.now();
+  const timeSinceLastRequest = now - lastRequestTime;
+  if (timeSinceLastRequest < MIN_REQUEST_INTERVAL) {
+    const waitTime = MIN_REQUEST_INTERVAL - timeSinceLastRequest;
+    console.log(`Rate limiting: waiting ${waitTime}ms`);
+    await new Promise(resolve => setTimeout(resolve, waitTime));
+  }
+  lastRequestTime = Date.now();
 };
 
 const getAIInstance = () => new GoogleGenAI({ apiKey: getApiKey() });
@@ -46,6 +64,17 @@ const PALETTE_SCHEMA = {
 };
 
 export const generateGradients = async (baseColor: string, count: number = 8): Promise<GradientPalette[]> => {
+  // Check cache first
+  const cacheKey = `gradients-${baseColor}-${count}`;
+  const cached = cache.get(cacheKey);
+  if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
+    console.log('Using cached gradients');
+    return cached.data;
+  }
+
+  // Rate limiting
+  await checkRateLimit();
+
   for (let attempt = 0; attempt < API_KEYS.length; attempt++) {
     try {
       const ai = getAIInstance();
@@ -69,7 +98,10 @@ export const generateGradients = async (baseColor: string, count: number = 8): P
       });
 
       if (response.text) {
-        return JSON.parse(response.text) as GradientPalette[];
+        const result = JSON.parse(response.text) as GradientPalette[];
+        // Cache the result
+        cache.set(cacheKey, { data: result, timestamp: Date.now() });
+        return result;
       }
       throw new Error("No data returned from Gemini");
     } catch (error: any) {
@@ -78,7 +110,7 @@ export const generateGradients = async (baseColor: string, count: number = 8): P
         console.error(`Quota exceeded on key ${currentKeyIndex + 1}, trying next key...`);
         rotateApiKey();
         if (attempt === API_KEYS.length - 1) {
-          throw new Error("All API keys have exceeded their quota. Please try again later.");
+          throw new Error("All API keys have exceeded their quota. Free tier limits: ~15 requests/min. Please wait a few minutes or upgrade to paid tier.");
         }
         continue; // Try next key
       }
