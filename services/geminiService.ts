@@ -14,6 +14,47 @@ const desaturate = (color: string, amount: number) => colord(color).desaturate(a
 const mix = (color1: string, color2: string, ratio: number = 0.5) => 
   colord(color1).mix(color2, ratio).toHex();
 
+// Get random element from array
+const random = <T>(arr: T[]): T => arr[Math.floor(Math.random() * arr.length)];
+const randomRange = (min: number, max: number) => Math.random() * (max - min) + min;
+
+// Enhanced color manipulation - stay closer to base color
+const adjustBrightness = (color: string, preserveHue: boolean = true) => {
+  const col = colord(color);
+  const brightness = col.brightness();
+  const hsl = col.toHsl();
+  
+  // Don't adjust if already good brightness or if very saturated
+  if (brightness > 0.3 && brightness < 0.7) return color;
+  
+  if (brightness > 0.7) {
+    return darken(color, randomRange(0.05, 0.15));
+  }
+  if (brightness < 0.3 && hsl.s > 0.2) {
+    return lighten(color, randomRange(0.05, 0.15));
+  }
+  return color;
+};
+
+// Keep variations close to base color
+const createHarmoniousVariation = (baseColor: string, hueShift: number, method: 'lighten' | 'darken' | 'saturate' | 'none' = 'none') => {
+  let result = rotateHue(baseColor, hueShift);
+  
+  switch(method) {
+    case 'lighten':
+      result = lighten(result, randomRange(0.08, 0.15));
+      break;
+    case 'darken':
+      result = darken(result, randomRange(0.08, 0.15));
+      break;
+    case 'saturate':
+      result = saturate(result, randomRange(0.1, 0.2));
+      break;
+  }
+  
+  return result;
+};
+
 // Gradient directions pool
 const directions = [
   "to right",
@@ -27,139 +68,215 @@ const directions = [
   "180deg"
 ];
 
-// Palette name generators
+// Enhanced palette name generators with more variety
 const paletteNames = {
-  analogous: ["Harmony", "Flow", "Cascade", "Melody", "Symphony", "Rhythm", "Breeze"],
-  complementary: ["Contrast", "Balance", "Duality", "Eclipse", "Fusion", "Unity", "Equilibrium"],
-  triadic: ["Trinity", "Triad", "Triangle", "Spectrum", "Prism", "Rainbow", "Kaleidoscope"],
-  monochromatic: ["Gradient", "Fade", "Depth", "Layers", "Shades", "Tones", "Nuance"],
-  splitComplementary: ["Split", "Diverge", "Branch", "Fork", "Divide", "Harmony Plus"],
-  tetradic: ["Square", "Quartet", "Four Corners", "Cross", "Quad"],
-  vibrant: ["Energy", "Vibrant", "Bold", "Vivid", "Electric", "Neon", "Pop"],
-  pastel: ["Soft", "Gentle", "Whisper", "Dream", "Cloud", "Silk", "Powder"],
-  warm: ["Sunset", "Autumn", "Fire", "Warmth", "Copper", "Amber", "Glow"],
-  cool: ["Ocean", "Ice", "Winter", "Frost", "Arctic", "Azure", "Chill"],
-  earthy: ["Nature", "Earth", "Forest", "Terra", "Wood", "Stone", "Clay"]
+  analogous: ["Harmony", "Flow", "Cascade", "Melody", "Symphony", "Rhythm", "Breeze", "Silk Road", "Gentle Waves", "Morning Bloom"],
+  complementary: ["Contrast", "Balance", "Duality", "Eclipse", "Fusion", "Unity", "Equilibrium", "Day & Night", "Fire & Ice", "Yin Yang"],
+  triadic: ["Trinity", "Triad", "Triangle", "Spectrum", "Prism", "Rainbow", "Kaleidoscope", "Trifecta", "Triple Crown", "Three Muses"],
+  monochromatic: ["Gradient", "Fade", "Depth", "Layers", "Shades", "Tones", "Nuance", "Ombre", "Spectrum", "Gradient Flow"],
+  splitComplementary: ["Split", "Diverge", "Branch", "Fork", "Divide", "Harmony Plus", "Three Ways", "Trident", "Split Path"],
+  tetradic: ["Square", "Quartet", "Four Corners", "Cross", "Quad", "Four Seasons", "Cardinal", "Compass", "Four Elements"],
+  vibrant: ["Energy", "Vibrant", "Bold", "Vivid", "Electric", "Neon", "Pop", "Burst", "Explosion", "Pulse", "Lightning"],
+  pastel: ["Soft", "Gentle", "Whisper", "Dream", "Cloud", "Silk", "Powder", "Cotton Candy", "Marshmallow", "Serenity"],
+  warm: ["Sunset", "Autumn", "Fire", "Warmth", "Copper", "Amber", "Glow", "Golden Hour", "Ember", "Cinnamon", "Spice"],
+  cool: ["Ocean", "Ice", "Winter", "Frost", "Arctic", "Azure", "Chill", "Crystal", "Glacier", "Mint", "Breeze"],
+  earthy: ["Nature", "Earth", "Forest", "Terra", "Wood", "Stone", "Clay", "Moss", "Sage", "Terracotta", "Bark"]
 };
 
 const descriptors = {
-  analogous: "harmonious colors that sit next to each other",
-  complementary: "bold contrast with opposite colors",
-  triadic: "balanced trio of evenly spaced colors",
-  monochromatic: "elegant variations of a single hue",
-  splitComplementary: "sophisticated three-color harmony",
-  tetradic: "rich four-color combination",
-  vibrant: "energetic and saturated tones",
-  pastel: "soft and calming shades",
-  warm: "cozy and inviting warmth",
-  cool: "refreshing and calm vibes",
-  earthy: "grounded natural tones"
+  analogous: ["harmonious colors flowing seamlessly", "neighboring hues creating unity", "smooth color transitions"],
+  complementary: ["bold contrast with opposite hues", "dynamic tension and balance", "striking opposites that attract"],
+  triadic: ["balanced trio of evenly spaced colors", "three-way color harmony", "triangular color relationship"],
+  monochromatic: ["elegant variations of a single hue", "tonal depth and sophistication", "shades dancing together"],
+  splitComplementary: ["sophisticated three-color harmony", "refined complementary approach", "balanced contrast with flair"],
+  tetradic: ["rich four-color combination", "square harmony on color wheel", "complex yet balanced palette"],
+  vibrant: ["energetic and saturated tones", "bold, attention-grabbing colors", "vivid hues bursting with life"],
+  pastel: ["soft and calming shades", "gentle, approachable colors", "delicate tints with subtle charm"],
+  warm: ["cozy and inviting warmth", "sunset-inspired hues", "embracing, comfortable tones"],
+  cool: ["refreshing and calm vibes", "serene, trustworthy colors", "crisp, professional atmosphere"],
+  earthy: ["grounded natural tones", "organic, nature-inspired palette", "earthy, authentic colors"]
 };
 
-// Generate palette name
+// Generate creative palette name
 const generateName = (type: string, baseColor: string): string => {
-  const colorName = colord(baseColor).toName({ closest: true }) || "Color";
+  const colorObj = colord(baseColor);
+  const hue = colorObj.hue();
+  const saturation = colorObj.toHsl().s;
+  const lightness = colorObj.toHsl().l;
+  
+  // Get base color name or descriptive term
+  let colorDesc = colorObj.toName({ closest: true });
+  
+  // If no name found, use hue-based description
+  if (!colorDesc || colorDesc === baseColor) {
+    if (hue < 30) colorDesc = "Ruby";
+    else if (hue < 60) colorDesc = "Golden";
+    else if (hue < 90) colorDesc = "Lime";
+    else if (hue < 150) colorDesc = "Emerald";
+    else if (hue < 210) colorDesc = "Sapphire";
+    else if (hue < 270) colorDesc = "Violet";
+    else if (hue < 330) colorDesc = "Magenta";
+    else colorDesc = "Crimson";
+  }
+  
+  // Add saturation/lightness modifiers
+  if (saturation < 0.2) colorDesc = "Muted " + colorDesc;
+  else if (saturation > 0.8) colorDesc = "Vivid " + colorDesc;
+  
+  if (lightness < 0.3) colorDesc = "Deep " + colorDesc;
+  else if (lightness > 0.7) colorDesc = "Soft " + colorDesc;
+  
   const names = paletteNames[type as keyof typeof paletteNames] || paletteNames.analogous;
-  const name = names[Math.floor(Math.random() * names.length)];
-  return `${colorName} ${name}`;
+  const name = random(names);
+  
+  return `${colorDesc} ${name}`;
 };
 
-// Color harmony generators
+// Enhanced color harmony generators - stay true to base color
 const generateAnalogous = (baseColor: string): string[] => {
+  const angle1 = randomRange(15, 25);
+  const angle2 = randomRange(30, 45);
   return [
     baseColor,
-    rotateHue(baseColor, 30),
-    rotateHue(baseColor, 60)
+    createHarmoniousVariation(baseColor, angle1, 'lighten'),
+    createHarmoniousVariation(baseColor, angle2, 'none'),
+    createHarmoniousVariation(baseColor, -angle1, 'darken')
   ];
 };
 
 const generateComplementary = (baseColor: string): string[] => {
+  const complement = rotateHue(baseColor, 180);
   return [
     baseColor,
-    mix(baseColor, rotateHue(baseColor, 180), 0.3),
-    rotateHue(baseColor, 180)
+    lighten(baseColor, randomRange(0.1, 0.2)),
+    mix(baseColor, complement, randomRange(0.15, 0.25)),
+    mix(baseColor, complement, randomRange(0.3, 0.4))
   ];
 };
 
 const generateTriadic = (baseColor: string): string[] => {
+  const color2 = rotateHue(baseColor, 120);
+  const color3 = rotateHue(baseColor, 240);
   return [
     baseColor,
-    rotateHue(baseColor, 120),
-    rotateHue(baseColor, 240)
+    lighten(baseColor, 0.1),
+    mix(baseColor, color2, 0.25),
+    mix(baseColor, color3, 0.25)
   ];
 };
 
 const generateMonochromatic = (baseColor: string): string[] => {
-  const base = colord(baseColor);
+  const col = colord(baseColor);
+  const hsl = col.toHsl();
+  
   return [
-    darken(baseColor, 0.2),
+    darken(baseColor, 0.15),
     baseColor,
-    lighten(baseColor, 0.2),
-    lighten(baseColor, 0.4)
+    lighten(baseColor, 0.15),
+    lighten(baseColor, 0.25)
   ];
 };
 
 const generateSplitComplementary = (baseColor: string): string[] => {
+  const angle1 = 150;
+  const angle2 = 210;
   return [
     baseColor,
-    rotateHue(baseColor, 150),
-    rotateHue(baseColor, 210)
+    lighten(baseColor, 0.12),
+    mix(baseColor, rotateHue(baseColor, angle1), 0.2),
+    mix(baseColor, rotateHue(baseColor, angle2), 0.2)
   ];
 };
 
 const generateTetradic = (baseColor: string): string[] => {
   return [
     baseColor,
-    rotateHue(baseColor, 90),
-    rotateHue(baseColor, 180),
-    rotateHue(baseColor, 270)
+    createHarmoniousVariation(baseColor, 90, 'lighten'),
+    mix(baseColor, rotateHue(baseColor, 180), 0.3),
+    createHarmoniousVariation(baseColor, -90, 'lighten')
   ];
 };
 
 const generateVibrant = (baseColor: string): string[] => {
+  const satAmount = randomRange(0.2, 0.35);
+  const brightAmount = randomRange(0.08, 0.15);
   return [
-    saturate(baseColor, 0.3),
-    saturate(rotateHue(baseColor, 45), 0.3),
-    saturate(rotateHue(baseColor, 90), 0.3)
+    saturate(baseColor, satAmount),
+    saturate(lighten(baseColor, brightAmount), satAmount),
+    saturate(createHarmoniousVariation(baseColor, randomRange(20, 35), 'none'), satAmount),
+    saturate(createHarmoniousVariation(baseColor, randomRange(-20, -35), 'none'), satAmount)
   ];
 };
 
 const generatePastel = (baseColor: string): string[] => {
+  const createPastel = (c: string, extraLighten: number = 0) => 
+    desaturate(lighten(c, 0.3 + extraLighten), randomRange(0.3, 0.4));
+  
   return [
-    desaturate(lighten(baseColor, 0.3), 0.3),
-    desaturate(lighten(rotateHue(baseColor, 30), 0.3), 0.3),
-    desaturate(lighten(rotateHue(baseColor, 60), 0.3), 0.3)
+    createPastel(baseColor, 0),
+    createPastel(createHarmoniousVariation(baseColor, 15, 'none'), 0.05),
+    createPastel(createHarmoniousVariation(baseColor, 30, 'none'), 0.1),
+    createPastel(createHarmoniousVariation(baseColor, -15, 'none'), 0.05)
   ];
 };
 
 const generateWarm = (baseColor: string): string[] => {
-  const warm = colord(baseColor).hue() < 60 || colord(baseColor).hue() > 300 
-    ? baseColor 
-    : "#FF6B6B";
+  const hue = colord(baseColor).hue();
+  
+  // If already warm (red-orange-yellow range), enhance it
+  if (hue < 60 || hue > 300) {
+    return [
+      baseColor,
+      lighten(baseColor, 0.1),
+      createHarmoniousVariation(baseColor, randomRange(10, 20), 'lighten'),
+      createHarmoniousVariation(baseColor, randomRange(-10, -20), 'darken')
+    ];
+  }
+  
+  // If not warm, shift toward warm hues but stay close
+  const warmShift = hue > 180 ? randomRange(-30, -15) : randomRange(15, 30);
+  const warmed = rotateHue(baseColor, warmShift);
   return [
-    warm,
-    rotateHue(warm, 15),
-    rotateHue(warm, 30),
-    rotateHue(warm, 45)
+    baseColor,
+    mix(baseColor, warmed, 0.5),
+    warmed,
+    lighten(warmed, 0.15)
   ];
 };
 
 const generateCool = (baseColor: string): string[] => {
-  const cool = colord(baseColor).hue() > 180 && colord(baseColor).hue() < 300
-    ? baseColor
-    : "#4ECDC4";
+  const hue = colord(baseColor).hue();
+  
+  // If already cool (cyan-blue-purple range), enhance it
+  if (hue > 180 && hue < 300) {
+    return [
+      baseColor,
+      lighten(baseColor, 0.1),
+      createHarmoniousVariation(baseColor, randomRange(15, 25), 'lighten'),
+      createHarmoniousVariation(baseColor, randomRange(-15, -25), 'none')
+    ];
+  }
+  
+  // If not cool, shift toward cool hues but stay close
+  const coolShift = hue < 180 ? randomRange(20, 35) : randomRange(-35, -20);
+  const cooled = rotateHue(baseColor, coolShift);
   return [
-    cool,
-    rotateHue(cool, 15),
-    rotateHue(cool, 30)
+    baseColor,
+    mix(baseColor, cooled, 0.5),
+    cooled,
+    desaturate(cooled, 0.1)
   ];
 };
 
 const generateEarthy = (baseColor: string): string[] => {
+  const createEarthy = (c: string, desatAmount: number = 0.4) => 
+    desaturate(mix(c, darken(c, randomRange(0.05, 0.12)), 0.7), desatAmount);
+  
   return [
-    desaturate(darken(baseColor, 0.1), 0.4),
-    desaturate(baseColor, 0.3),
-    desaturate(lighten(baseColor, 0.1), 0.2)
+    createEarthy(baseColor, 0.35),
+    createEarthy(lighten(baseColor, 0.08), 0.3),
+    createEarthy(createHarmoniousVariation(baseColor, randomRange(15, 25), 'none'), 0.4),
+    createEarthy(darken(baseColor, 0.08), 0.45)
   ];
 };
 
@@ -167,15 +284,15 @@ const generateEarthy = (baseColor: string): string[] => {
 export const generateGradients = async (baseColor: string, count: number = 8): Promise<GradientPalette[]> => {
   const generators = [
     { type: 'analogous', fn: generateAnalogous },
-    { type: 'complementary', fn: generateComplementary },
-    { type: 'triadic', fn: generateTriadic },
     { type: 'monochromatic', fn: generateMonochromatic },
-    { type: 'splitComplementary', fn: generateSplitComplementary },
+    { type: 'complementary', fn: generateComplementary },
     { type: 'vibrant', fn: generateVibrant },
     { type: 'pastel', fn: generatePastel },
+    { type: 'triadic', fn: generateTriadic },
     { type: 'warm', fn: generateWarm },
     { type: 'cool', fn: generateCool },
     { type: 'earthy', fn: generateEarthy },
+    { type: 'splitComplementary', fn: generateSplitComplementary },
     { type: 'tetradic', fn: generateTetradic }
   ];
 
@@ -186,29 +303,37 @@ export const generateGradients = async (baseColor: string, count: number = 8): P
   
   for (let i = 0; i < Math.min(count, shuffled.length); i++) {
     const { type, fn } = shuffled[i];
-    const colors = fn(baseColor).slice(0, 3 + Math.floor(Math.random() * 2)); // 3-4 colors
+    const colors = fn(baseColor);
+    
+    // Use 3-4 colors for better visual cohesion
+    const colorCount = Math.floor(Math.random() * 2) + 3; // 3 or 4 colors
+    const selectedColors = colors.slice(0, colorCount);
     
     palettes.push({
       name: generateName(type, baseColor),
-      description: `A ${type} palette featuring ${descriptors[type as keyof typeof descriptors]}`,
-      colors: colors,
-      direction: directions[Math.floor(Math.random() * directions.length)]
+      description: `A ${type} palette featuring ${random(descriptors[type as keyof typeof descriptors])}`,
+      colors: selectedColors,
+      direction: random(directions)
     });
   }
 
-  // If we need more palettes, create variations
+  // If we need more palettes, create subtle variations of existing ones
   while (palettes.length < count) {
     const { type, fn } = shuffled[palettes.length % shuffled.length];
+    
+    // Create subtle variation: slightly adjust lightness of base color
     const variation = Math.random() > 0.5 
-      ? rotateHue(baseColor, Math.random() * 30 - 15)
-      : baseColor;
-    const colors = fn(variation).slice(0, 3 + Math.floor(Math.random() * 2));
+      ? lighten(baseColor, randomRange(0.03, 0.08))
+      : darken(baseColor, randomRange(0.03, 0.08));
+    
+    const colors = fn(variation);
+    const colorCount = Math.floor(Math.random() * 2) + 3;
     
     palettes.push({
       name: generateName(type, variation),
-      description: `A ${type} variation with ${descriptors[type as keyof typeof descriptors]}`,
-      colors: colors,
-      direction: directions[Math.floor(Math.random() * directions.length)]
+      description: `A ${type} variation with ${random(descriptors[type as keyof typeof descriptors])}`,
+      colors: colors.slice(0, colorCount),
+      direction: random(directions)
     });
   }
 
