@@ -456,7 +456,7 @@ export const generateCustomPalettes = async (options: CustomGenerationOptions): 
 };
 
 export const generateCuratedPalettes = async (): Promise<GradientPalette[]> => {
-  // Curated base colors for variety
+  // Curated base colors for variety - with MORE diverse starting points
   const curatedBases = [
     { color: '#6366F1', theme: 'Modern' },
     { color: '#EC4899', theme: 'Vibrant' },
@@ -487,17 +487,36 @@ export const generateCuratedPalettes = async (): Promise<GradientPalette[]> => {
     { type: 'tetradic', fn: generateTetradic }
   ];
 
-  curatedBases.forEach(({ color, theme }, index) => {
-    const { type, fn } = allGenerators[index % allGenerators.length];
-    const colors = fn(color).slice(0, 3 + Math.floor(Math.random() * 2));
+  // Shuffle for randomness each time
+  const shuffledGenerators = [...allGenerators].sort(() => Math.random() - 0.5);
+  const shuffledBases = [...curatedBases].sort(() => Math.random() - 0.5);
+
+  shuffledBases.forEach(({ color, theme }, index) => {
+    // Apply RANDOM variation to base color each time for inspiration
+    const variation = Math.random() > 0.5 
+      ? lighten(color, randomRange(0.05, 0.15))
+      : darken(color,  randomRange(0.05, 0.15));
+    
+    // Sometimes rotate hue slightly for more variety
+    const finalColor = Math.random() > 0.6 
+      ? rotateHue(variation, randomRange(-20, 20))
+      : variation;
+    
+    const { type, fn } = shuffledGenerators[index % shuffledGenerators.length];
+    const colors = fn(finalColor);
+    
+    // Vary color count for visual diversity (3-5 colors)
+    const colorCount = 3 + Math.floor(Math.random() * 3);
+    const selectedColors = colors.slice(0, colorCount);
     
     palettes.push({
-      name: `${theme} ${paletteNames[type as keyof typeof paletteNames][0]}`,
-      description: `${theme} themed gradient with ${descriptors[type as keyof typeof descriptors]}`,
-      colors: colors,
-      direction: directions[Math.floor(Math.random() * directions.length)]
+      name: generateName(type, finalColor),
+      description: `${theme} themed gradient with ${random(descriptors[type as keyof typeof descriptors])}`,
+      colors: selectedColors,
+      direction: random(directions)
     });
   });
+
 
   return palettes;
 };

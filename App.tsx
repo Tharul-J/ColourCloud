@@ -3,6 +3,7 @@ import { generateGradients, generateCuratedPalettes } from './services/geminiSer
 import { GradientPalette, ViewMode } from './types';
 import GradientCard from './components/GradientCard';
 import SkeletonCard from './components/SkeletonCard';
+import DetailView from './components/DetailView';
 import { WandIcon, RefreshIcon, PlusIcon, LayoutGridIcon, SparklesIcon } from './components/Icons';
 
 const App: React.FC = () => {
@@ -15,6 +16,7 @@ const App: React.FC = () => {
   const [loadingMore, setLoadingMore] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [view, setView] = useState<ViewMode>('home');
+  const [selectedPalette, setSelectedPalette] = useState<GradientPalette | null>(null);
 
   // Initial load for Home
   useEffect(() => {
@@ -115,8 +117,13 @@ const App: React.FC = () => {
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col font-sans text-slate-900">
       
-      {/* Navigation Bar */}
-      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-200">
+      {/* Show Detail View if a palette is selected */}
+      {selectedPalette ? (
+        <DetailView palette={selectedPalette} onBack={() => setSelectedPalette(null)} />
+      ) : (
+        <>
+          {/* Navigation Bar */}
+          <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-2 cursor-pointer" onClick={() => setView('home')}>
@@ -221,7 +228,13 @@ const App: React.FC = () => {
                     <span className="text-slate-500 text-sm">{palettes.length} Results</span>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-12">
-                    {palettes.map((palette, index) => <GradientCard key={`${palette.name}-${index}`} palette={palette} />)}
+                    {palettes.map((palette, index) => (
+                      <GradientCard 
+                        key={`${palette.name}-${index}`} 
+                        palette={palette}
+                        onViewDetails={() => setSelectedPalette(palette)}
+                      />
+                    ))}
                     {loadingMore && [1, 2, 3, 4].map((i) => <SkeletonCard key={`loading-${i}`} />)}
                   </div>
                   {palettes.length > 0 && !loadingMore && (
@@ -265,7 +278,13 @@ const App: React.FC = () => {
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                {inspirationPalettes.map((palette, index) => <GradientCard key={`inspo-${index}`} palette={palette} />)}
+                {inspirationPalettes.map((palette, index) => (
+                  <GradientCard 
+                    key={`inspo-${index}`} 
+                    palette={palette}
+                    onViewDetails={() => setSelectedPalette(palette)}
+                  />
+                ))}
               </div>
             )}
           </div>
@@ -283,6 +302,8 @@ const App: React.FC = () => {
           </div>
         </div>
       </footer>
+        </>
+      )}
     </div>
   );
 };

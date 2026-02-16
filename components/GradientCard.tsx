@@ -4,9 +4,10 @@ import { CopyIcon, CheckIcon, ListIcon } from './Icons';
 
 interface GradientCardProps {
   palette: GradientPalette;
+  onViewDetails?: () => void;
 }
 
-const GradientCard: React.FC<GradientCardProps> = ({ palette }) => {
+const GradientCard: React.FC<GradientCardProps> = ({ palette, onViewDetails }) => {
   const [copied, setCopied] = useState<string | null>(null);
 
   const gradientStyle = {
@@ -43,12 +44,12 @@ const GradientCard: React.FC<GradientCardProps> = ({ palette }) => {
         </button>
         
         <button
-          onClick={() => handleCopy(infoString, 'info')}
+          onClick={onViewDetails}
           className="bg-white/90 hover:bg-white text-slate-800 px-3 py-2 rounded-lg font-medium text-xs shadow-lg flex items-center gap-2 transform translate-y-4 group-hover:translate-y-0 transition-all duration-300 delay-75"
-          title="Copy Palette Name and Colors"
+          title="View Details"
         >
-          {copied === 'info' ? <CheckIcon className="w-3 h-3 text-green-600" /> : <ListIcon className="w-3 h-3" />}
-          {copied === 'info' ? 'Copied' : 'Info'}
+          <ListIcon className="w-3 h-3" />
+          Info
         </button>
       </div>
 
