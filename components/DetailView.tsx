@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { GradientPalette } from '../types';
-import { CopyIcon, CheckIcon, ArrowLeftIcon } from './Icons';
+import { CopyIcon, CheckIcon, ArrowLeftIcon, DownloadIcon } from './Icons';
+import { exportGradientAsImage } from '../services/imageExportService';
 
 interface DetailViewProps {
   palette: GradientPalette;
@@ -54,22 +55,32 @@ const DetailView: React.FC<DetailViewProps> = ({ palette, onBack }) => {
               <h1 className="text-4xl font-bold text-slate-900 mb-3">{palette.name}</h1>
               <p className="text-lg text-slate-600">{palette.description}</p>
             </div>
-            <button
-              onClick={() => handleCopy(cssString, 'css')}
-              className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-xl font-semibold flex items-center gap-2 transition-all duration-200 shadow-lg hover:shadow-xl"
-            >
-              {copied === 'css' ? (
-                <>
-                  <CheckIcon className="w-5 h-5" />
-                  Copied!
-                </>
-              ) : (
-                <>
-                  <CopyIcon className="w-5 h-5" />
-                  Copy CSS
-                </>
-              )}
-            </button>
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => handleCopy(cssString, 'css')}
+                className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-xl font-semibold flex items-center gap-2 transition-all duration-200 shadow-lg hover:shadow-xl"
+              >
+                {copied === 'css' ? (
+                  <>
+                    <CheckIcon className="w-5 h-5" />
+                    Copied!
+                  </>
+                ) : (
+                  <>
+                    <CopyIcon className="w-5 h-5" />
+                    Copy CSS
+                  </>
+                )}
+              </button>
+              <button
+                onClick={() => exportGradientAsImage(palette)}
+                className="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 rounded-xl font-semibold flex items-center gap-2 transition-all duration-200 shadow-lg hover:shadow-xl"
+                title="Download as PNG image (1080x1080)"
+              >
+                <DownloadIcon className="w-5 h-5" />
+                Download PNG
+              </button>
+            </div>
           </div>
 
           {/* Gradient Direction */}

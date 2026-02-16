@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { GradientPalette } from '../types';
-import { CopyIcon, CheckIcon, ListIcon, HeartIcon } from './Icons';
+import { CopyIcon, CheckIcon, ListIcon, HeartIcon, DownloadIcon } from './Icons';
+import { exportGradientAsImage } from '../services/imageExportService';
 
 interface GradientCardProps {
   palette: GradientPalette;
@@ -29,6 +30,11 @@ const GradientCard: React.FC<GradientCardProps> = ({
     navigator.clipboard.writeText(text);
     setCopied(type);
     setTimeout(() => setCopied(null), 2000);
+  };
+
+  const handleDownload = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    exportGradientAsImage(palette);
   };
 
   return (
@@ -69,8 +75,17 @@ const GradientCard: React.FC<GradientCardProps> = ({
         </button>
         
         <button
-          onClick={onViewDetails}
+          onClick={handleDownload}
           className="bg-white/90 hover:bg-white text-slate-800 px-3 py-2 rounded-lg font-medium text-xs shadow-lg flex items-center gap-2 transform translate-y-4 group-hover:translate-y-0 transition-all duration-300 delay-75"
+          title="Download as Image"
+        >
+          <DownloadIcon className="w-3 h-3" />
+          PNG
+        </button>
+        
+        <button
+          onClick={onViewDetails}
+          className="bg-white/90 hover:bg-white text-slate-800 px-3 py-2 rounded-lg font-medium text-xs shadow-lg flex items-center gap-2 transform translate-y-4 group-hover:translate-y-0 transition-all duration-300 delay-150"
           title="View Details"
         >
           <ListIcon className="w-3 h-3" />
