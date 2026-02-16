@@ -1,6 +1,6 @@
 # 🎨 ColourCloud
 
-Generate beautiful gradient color palettes instantly using color theory algorithms. Pick a color, get inspired.
+Generate beautiful gradient color palettes instantly using color theory algorithms. Pick a color, get inspired, customize, and share.
 
 ⚡ **Unlimited • Instant • Free Forever**
 
@@ -26,15 +26,27 @@ Generate beautiful gradient color palettes instantly using color theory algorith
 ------
 ## ✨ Features
 
+### 🎨 Core Features
 - **🎨 Professional Color Theory** - 11 harmony algorithms with cinematic-quality color grading
 - **✨ Golden Ratio Perfection** - Mathematical φ (1.618) for naturally pleasing proportions
 - **⚡ Instant Generation** - No API calls, unlimited usage, zero latency (<10ms)
 - **💰 100% Free** - No API keys, no quotas, no costs ever
 - **🎬 Cinema-Grade Quality** - Industry-standard color grading techniques
+
+### 🎯 Powerful Tools
+- **❤️ Favorites System** - Save your favorite palettes to localStorage (no login required)
+- **📥 Export as PNG** - Download gradients as 1080x1080px Instagram-ready images
+- **✏️ Interactive Editor** - Edit colors, reorder, add/remove (2-10 colors), change directions
 - **📋 Copy CSS Code** - Export gradients directly to your projects
+- **🔍 Detail View** - See HEX, RGB, and HSL values for every color
 - **🎯 Smart Naming** - Auto-generated creative palette names with HSL analysis
-- **🌈 Beautiful UI** - Modern, intuitive interface with skeleton loaders
+
+### 💡 User Experience
+- **🌈 Beautiful UI** - Modern, intuitive interface with smooth animations
+- **⚡ Real-time Preview** - See changes instantly as you edit
+- **🎨 Curated Inspiration** - Pre-designed professional palettes
 - **🤖 Color Assistant** - Built-in chatbot for color theory advice
+- **📱 Fully Responsive** - Works beautifully on all devices
 
 ## 🚀 Tech Stack
 
@@ -42,6 +54,35 @@ Generate beautiful gradient color palettes instantly using color theory algorith
 - Vite
 - Tailwind CSS
 - **colord** - Advanced color manipulation library
+- **Canvas API** - Client-side image generation
+- **localStorage** - Browser-based favorites storage
+
+## 🎯 How to Use
+
+### Generate Palettes
+1. Pick a base color or randomize
+2. Get 8 instant AI-quality gradients
+3. View more with "See More" (unlimited)
+
+### Customize & Edit
+1. Hover over any palette to see quick actions
+2. Click **Edit** to open the palette editor
+3. Change colors with color picker or hex input
+4. Reorder colors using ↑↓ arrows
+5. Add/remove colors (2-10 range)
+6. Edit name, description, and gradient direction
+7. Save your changes
+
+### Save & Share
+1. Click **❤️** to save favorites (stored in browser)
+2. Click **PNG** to download as 1080x1080px image
+3. Click **CSS** to copy code for your projects
+4. Click **Info** for detailed color values (HEX/RGB/HSL)
+
+### Explore
+- **Home** - Generate custom palettes from your color
+- **Inspiration** - Browse curated professional palettes
+- **Favorites** - Access your saved palettes anytime
 
 
 ## 🛠️ Setup
