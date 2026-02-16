@@ -1,18 +1,20 @@
 import React, { useState } from 'react';
 import { GradientPalette } from '../types';
-import { CopyIcon, CheckIcon, ListIcon, HeartIcon, DownloadIcon } from './Icons';
+import { CopyIcon, CheckIcon, ListIcon, HeartIcon, DownloadIcon, EditIcon } from './Icons';
 import { exportGradientAsImage } from '../services/imageExportService';
 
 interface GradientCardProps {
   palette: GradientPalette;
   onViewDetails?: () => void;
+  onEdit?: () => void;
   isFavorited?: boolean;
   onToggleFavorite?: () => void;
 }
 
 const GradientCard: React.FC<GradientCardProps> = ({ 
   palette, 
-  onViewDetails, 
+  onViewDetails,
+  onEdit, 
   isFavorited = false,
   onToggleFavorite 
 }) => {
@@ -91,6 +93,20 @@ const GradientCard: React.FC<GradientCardProps> = ({
           <ListIcon className="w-3 h-3" />
           Info
         </button>
+        
+        {onEdit && (
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onEdit();
+            }}
+            className="bg-white/90 hover:bg-white text-slate-800 px-3 py-2 rounded-lg font-medium text-xs shadow-lg flex items-center gap-2 transform translate-y-4 group-hover:translate-y-0 transition-all duration-300 delay-200"
+            title="Edit Palette"
+          >
+            <EditIcon className="w-3 h-3" />
+            Edit
+          </button>
+        )}
       </div>
 
       <div className="p-5 flex-1 flex flex-col">

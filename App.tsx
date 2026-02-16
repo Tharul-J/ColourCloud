@@ -5,6 +5,7 @@ import { GradientPalette, ViewMode } from './types';
 import GradientCard from './components/GradientCard';
 import SkeletonCard from './components/SkeletonCard';
 import DetailView from './components/DetailView';
+import EditView from './components/EditView';
 import { WandIcon, RefreshIcon, PlusIcon, LayoutGridIcon, SparklesIcon, HeartIcon } from './components/Icons';
 
 const App: React.FC = () => {
@@ -19,6 +20,7 @@ const App: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [view, setView] = useState<ViewMode>('home');
   const [selectedPalette, setSelectedPalette] = useState<GradientPalette | null>(null);
+  const [editingPalette, setEditingPalette] = useState<GradientPalette | null>(null);
 
   // Load favorites on mount
   useEffect(() => {
@@ -90,6 +92,41 @@ const App: React.FC = () => {
     setFavorites(getFavorites());
   };
 
+  const handleEditPalette = (palette: GradientPalette) => {
+    setEditingPalette(palette);
+  };
+
+  const handleSaveEditedPalette = (editedPalette: GradientPalette) => {
+    // Update in palettes array if it exists there
+    const paletteIndex = palettes.findIndex(
+      p => p.name === editingPalette?.name && JSON.stringify(p.colors) === JSON.stringify(editingPalette?.colors)
+    );
+    if (paletteIndex !== -1) {
+      const newPalettes = [...palettes];
+      newPalettes[paletteIndex] = editedPalette;
+      setPalettes(newPalettes);
+    }
+
+    // Update in inspiration palettes if it exists there
+    const inspoIndex = inspirationPalettes.findIndex(
+      p => p.name === editingPalette?.name && JSON.stringify(p.colors) === JSON.stringify(editingPalette?.colors)
+    );
+    if (inspoIndex !== -1) {
+      const newInspo = [...inspirationPalettes];
+      newInspo[inspoIndex] = editedPalette;
+      setInspirationPalettes(newInspo);
+    }
+
+    // If it was a favorite, update it
+    if (editingPalette && isFavorite(editingPalette)) {
+      removeFavorite(editingPalette);
+      addFavorite(editedPalette);
+      setFavorites(getFavorites());
+    }
+
+    setEditingPalette(null);
+  };
+
   const AnimatedText = ({ text }: { text: string }) => (
     <span className="inline-block whitespace-nowrap">
       {text.split('').map((char, i) => (
@@ -134,8 +171,15 @@ const App: React.FC = () => {
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col font-sans text-slate-900">
       
-      {/* Show Detail View if a palette is selected */}
-      {selectedPalette ? (
+      {/* Show Edit View if editing a palette */}
+      {editingPalette ? (
+        <EditView 
+          palette={editingPalette} 
+          onSave={handleSaveEditedPalette}
+          onCancel={() => setEditingPalette(null)}
+        />
+      ) : selectedPalette ? (
+        /* Show Detail View if a palette is selected */
         <DetailView palette={selectedPalette} onBack={() => setSelectedPalette(null)} />
       ) : (
         <>
@@ -263,6 +307,7 @@ const App: React.FC = () => {
                         key={`${palette.name}-${index}`} 
                         palette={palette}
                         onViewDetails={() => setSelectedPalette(palette)}
+                        onEdit={() => handleEditPalette(palette)}
                         isFavorited={isFavorite(palette)}
                         onToggleFavorite={() => handleToggleFavorite(palette)}
                       />
@@ -315,6 +360,7 @@ const App: React.FC = () => {
                     key={`inspo-${index}`} 
                     palette={palette}
                     onViewDetails={() => setSelectedPalette(palette)}
+                    onEdit={() => handleEditPalette(palette)}
                     isFavorited={isFavorite(palette)}
                     onToggleFavorite={() => handleToggleFavorite(palette)}
                   />
@@ -358,6 +404,7 @@ const App: React.FC = () => {
                     key={`fav-${index}`} 
                     palette={palette}
                     onViewDetails={() => setSelectedPalette(palette)}
+                    onEdit={() => handleEditPalette(palette)}
                     isFavorited={true}
                     onToggleFavorite={() => handleToggleFavorite(palette)}
                   />
