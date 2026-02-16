@@ -18,41 +18,59 @@ const mix = (color1: string, color2: string, ratio: number = 0.5) =>
 const random = <T>(arr: T[]): T => arr[Math.floor(Math.random() * arr.length)];
 const randomRange = (min: number, max: number) => Math.random() * (max - min) + min;
 
-// Enhanced color manipulation - stay closer to base color
-const adjustBrightness = (color: string, preserveHue: boolean = true) => {
+// Golden ratio for harmonious spacing
+const GOLDEN_RATIO = 1.618033988749895;
+
+// Professional color enhancement
+const enhanceColor = (color: string): string => {
   const col = colord(color);
-  const brightness = col.brightness();
   const hsl = col.toHsl();
   
-  // Don't adjust if already good brightness or if very saturated
-  if (brightness > 0.3 && brightness < 0.7) return color;
-  
-  if (brightness > 0.7) {
-    return darken(color, randomRange(0.05, 0.15));
-  }
-  if (brightness < 0.3 && hsl.s > 0.2) {
-    return lighten(color, randomRange(0.05, 0.15));
+  // Optimize saturation for better visual appeal
+  if (hsl.s < 0.15) {
+    return saturate(color, 0.1);
+  } else if (hsl.s > 0.9) {
+    return desaturate(color, 0.05);
   }
   return color;
 };
 
-// Keep variations close to base color
-const createHarmoniousVariation = (baseColor: string, hueShift: number, method: 'lighten' | 'darken' | 'saturate' | 'none' = 'none') => {
-  let result = rotateHue(baseColor, hueShift);
-  
-  switch(method) {
-    case 'lighten':
-      result = lighten(result, randomRange(0.08, 0.15));
-      break;
-    case 'darken':
-      result = darken(result, randomRange(0.08, 0.15));
-      break;
-    case 'saturate':
-      result = saturate(result, randomRange(0.1, 0.2));
-      break;
+// Create smooth transition between colors
+const createTransition = (color1: string, color2: string, steps: number = 2): string[] => {
+  const result: string[] = [color1];
+  for (let i = 1; i < steps; i++) {
+    result.push(mix(color1, color2, i / steps));
   }
-  
+  result.push(color2);
   return result;
+};
+
+// Balance brightness across palette
+const balanceBrightness = (colors: string[]): string[] => {
+  return colors.map((color, i) => {
+    const col = colord(color);
+    const brightness = col.brightness();
+    
+    // Create depth by varying brightness
+    if (i === 0 && brightness > 0.6) return darken(color, 0.08);
+    if (i === colors.length - 1 && brightness < 0.5) return lighten(color, 0.12);
+    
+    return color;
+  });
+};
+
+// Add luminance variation for depth
+const addDepth = (color: string, variation: 'lighter' | 'darker' | 'vivid'): string => {
+  switch(variation) {
+    case 'lighter':
+      return lighten(saturate(color, 0.05), randomRange(0.12, 0.18));
+    case 'darker':
+      return darken(saturate(color, 0.08), randomRange(0.1, 0.15));
+    case 'vivid':
+      return saturate(color, randomRange(0.15, 0.25));
+    default:
+      return color;
+  }
 };
 
 // Gradient directions pool
@@ -134,90 +152,151 @@ const generateName = (type: string, baseColor: string): string => {
 
 // Enhanced color harmony generators - stay true to base color
 const generateAnalogous = (baseColor: string): string[] => {
-  const angle1 = randomRange(15, 25);
-  const angle2 = randomRange(30, 45);
-  return [
-    baseColor,
-    createHarmoniousVariation(baseColor, angle1, 'lighten'),
-    createHarmoniousVariation(baseColor, angle2, 'none'),
-    createHarmoniousVariation(baseColor, -angle1, 'darken')
+  const angle1 = randomRange(12, 20);  // Very subtle hue shift
+  const angle2 = randomRange(25, 35);  // Moderate shift
+  
+  const color1 = rotateHue(baseColor, angle1);
+  const color2 = rotateHue(baseColor, angle2);
+  const color3 = rotateHue(baseColor, -angle1);
+  
+  const palette = [
+    enhanceColor(baseColor),
+    addDepth(color1, 'lighter'),
+    enhanceColor(color2),
+    addDepth(color3, 'darker')
   ];
+  
+  return balanceBrightness(palette);
 };
 
 const generateComplementary = (baseColor: string): string[] => {
   const complement = rotateHue(baseColor, 180);
-  return [
-    baseColor,
-    lighten(baseColor, randomRange(0.1, 0.2)),
-    mix(baseColor, complement, randomRange(0.15, 0.25)),
-    mix(baseColor, complement, randomRange(0.3, 0.4))
+  
+  // Create a beautiful bridge between base and complement
+  const bridge1 = mix(baseColor, complement, 0.15);
+  const bridge2 = mix(baseColor, complement, 0.35);
+  const accentComplement = addDepth(complement, 'vivid');
+  
+  const palette = [
+    enhanceColor(baseColor),
+    addDepth(bridge1, 'lighter'),
+    enhanceColor(bridge2),
+    accentComplement
   ];
+  
+  return balanceBrightness(palette);
 };
 
 const generateTriadic = (baseColor: string): string[] => {
   const color2 = rotateHue(baseColor, 120);
   const color3 = rotateHue(baseColor, 240);
-  return [
-    baseColor,
-    lighten(baseColor, 0.1),
-    mix(baseColor, color2, 0.25),
-    mix(baseColor, color3, 0.25)
+  
+  // Use golden ratio for sophisticated blends
+  const goldenMix = 1 / GOLDEN_RATIO; // ~0.618
+  const blend1 = mix(baseColor, color2, goldenMix * 0.3);
+  const blend2 = mix(baseColor, color3, goldenMix * 0.25);
+  
+  const palette = [
+    enhanceColor(baseColor),
+    addDepth(blend1, 'lighter'),
+    addDepth(blend2, 'vivid'),
+    enhanceColor(mix(color2, color3, 0.5))
   ];
+  
+  return balanceBrightness(palette);
 };
 
 const generateMonochromatic = (baseColor: string): string[] => {
   const col = colord(baseColor);
   const hsl = col.toHsl();
   
-  return [
-    darken(baseColor, 0.15),
-    baseColor,
-    lighten(baseColor, 0.15),
-    lighten(baseColor, 0.25)
+  // Create dramatic range while staying in same hue
+  const darkVersion = darken(saturate(baseColor, 0.1), randomRange(0.2, 0.3));
+  const lightVersion = lighten(desaturate(baseColor, 0.05), randomRange(0.2, 0.3));
+  const vividVersion = saturate(baseColor, randomRange(0.2, 0.35));
+  
+  const palette = [
+    darkVersion,
+    enhanceColor(baseColor),
+    vividVersion,
+    lightVersion
   ];
+  
+  return balanceBrightness(palette);
 };
 
 const generateSplitComplementary = (baseColor: string): string[] => {
   const angle1 = 150;
   const angle2 = 210;
-  return [
-    baseColor,
-    lighten(baseColor, 0.12),
-    mix(baseColor, rotateHue(baseColor, angle1), 0.2),
-    mix(baseColor, rotateHue(baseColor, angle2), 0.2)
+  
+  // Create sophisticated split harmony
+  const split1 = rotateHue(baseColor, angle1);
+  const split2 = rotateHue(baseColor, angle2);
+  const blend = mix(split1, split2, 0.5);
+  
+  const palette = [
+    enhanceColor(baseColor),
+    addDepth(baseColor, 'lighter'),
+    mix(baseColor, split1, 0.2),
+    mix(baseColor, split2, 0.2)
   ];
+  
+  return balanceBrightness(palette);
 };
 
 const generateTetradic = (baseColor: string): string[] => {
-  return [
-    baseColor,
-    createHarmoniousVariation(baseColor, 90, 'lighten'),
-    mix(baseColor, rotateHue(baseColor, 180), 0.3),
-    createHarmoniousVariation(baseColor, -90, 'lighten')
+  const color2 = rotateHue(baseColor, 90);
+  const color3 = rotateHue(baseColor, 180);
+  const color4 = rotateHue(baseColor, 270);
+  
+  // Four-way harmony with controlled blending
+  const palette = [
+    enhanceColor(baseColor),
+    addDepth(mix(baseColor, color2, 0.25), 'lighter'),
+    mix(baseColor, color3, 0.3),
+    addDepth(mix(baseColor, color4, 0.25), 'vivid')
   ];
+  
+  return balanceBrightness(palette);
 };
 
 const generateVibrant = (baseColor: string): string[] => {
-  const satAmount = randomRange(0.2, 0.35);
-  const brightAmount = randomRange(0.08, 0.15);
-  return [
-    saturate(baseColor, satAmount),
-    saturate(lighten(baseColor, brightAmount), satAmount),
-    saturate(createHarmoniousVariation(baseColor, randomRange(20, 35), 'none'), satAmount),
-    saturate(createHarmoniousVariation(baseColor, randomRange(-20, -35), 'none'), satAmount)
+  const angle1 = randomRange(18, 28);
+  const angle2 = randomRange(35, 45);
+  
+  // Maximum visual impact while staying in color family
+  const electric1 = saturate(lighten(rotateHue(baseColor, angle1), 0.1), 0.35);
+  const electric2 = saturate(rotateHue(baseColor, angle2), 0.4);
+  const electric3 = saturate(darken(rotateHue(baseColor, -angle1), 0.05), 0.3);
+  
+  const palette = [
+    addDepth(baseColor, 'vivid'),
+    electric1,
+    electric2,
+    electric3
   ];
+  
+  return balanceBrightness(palette);
 };
 
 const generatePastel = (baseColor: string): string[] => {
-  const createPastel = (c: string, extraLighten: number = 0) => 
-    desaturate(lighten(c, 0.3 + extraLighten), randomRange(0.3, 0.4));
+  const angle1 = randomRange(15, 22);
+  const angle2 = randomRange(8, 15);
   
-  return [
-    createPastel(baseColor, 0),
-    createPastel(createHarmoniousVariation(baseColor, 15, 'none'), 0.05),
-    createPastel(createHarmoniousVariation(baseColor, 30, 'none'), 0.1),
-    createPastel(createHarmoniousVariation(baseColor, -15, 'none'), 0.05)
+  // Create ethereal, light palette
+  const soft1 = lighten(desaturate(baseColor, 0.35), 0.32);
+  const soft2 = lighten(desaturate(rotateHue(baseColor, angle1), 0.3), 0.28);
+  const soft3 = lighten(desaturate(rotateHue(baseColor, -angle2), 0.32), 0.3);
+  const softBase = lighten(desaturate(baseColor, 0.25), 0.15);
+  
+  const palette = [
+    softBase,
+    soft1,
+    soft2,
+    soft3
   ];
+  
+  return balanceBrightness(palette);
 };
 
 const generateWarm = (baseColor: string): string[] => {
@@ -225,23 +304,19 @@ const generateWarm = (baseColor: string): string[] => {
   
   // If already warm (red-orange-yellow range), enhance it
   if (hue < 60 || hue > 300) {
-    return [
-      baseColor,
-      lighten(baseColor, 0.1),
-      createHarmoniousVariation(baseColor, randomRange(10, 20), 'lighten'),
-      createHarmoniousVariation(baseColor, randomRange(-10, -20), 'darken')
-    ];
+    const warm1 = addDepth(saturate(rotateHue(baseColor, randomRange(8, 15)), 0.15), 'lighter');
+    const warm2 = saturate(baseColor, randomRange(0.15, 0.25));
+    const warm3 = addDepth(rotateHue(baseColor, randomRange(-8, -15)), 'darker');
+    
+    return balanceBrightness([enhanceColor(baseColor), warm1, warm2, warm3]);
   }
   
   // If not warm, shift toward warm hues but stay close
   const warmShift = hue > 180 ? randomRange(-30, -15) : randomRange(15, 30);
   const warmed = rotateHue(baseColor, warmShift);
-  return [
-    baseColor,
-    mix(baseColor, warmed, 0.5),
-    warmed,
-    lighten(warmed, 0.15)
-  ];
+  const transition = createTransition(baseColor, warmed, 2);
+  
+  return balanceBrightness([enhanceColor(baseColor), ...transition.slice(1)]);
 };
 
 const generateCool = (baseColor: string): string[] => {
@@ -249,35 +324,39 @@ const generateCool = (baseColor: string): string[] => {
   
   // If already cool (cyan-blue-purple range), enhance it
   if (hue > 180 && hue < 300) {
-    return [
-      baseColor,
-      lighten(baseColor, 0.1),
-      createHarmoniousVariation(baseColor, randomRange(15, 25), 'lighten'),
-      createHarmoniousVariation(baseColor, randomRange(-15, -25), 'none')
-    ];
+    const cool1 = addDepth(saturate(rotateHue(baseColor, randomRange(10, 18)), 0.15), 'lighter');
+    const cool2 = saturate(lighten(baseColor, 0.08), randomRange(0.15, 0.25));
+    const cool3 = addDepth(rotateHue(baseColor, randomRange(-10, -18)), 'darker');
+    
+    return balanceBrightness([enhanceColor(baseColor), cool1, cool2, cool3]);
   }
   
   // If not cool, shift toward cool hues but stay close
-  const coolShift = hue < 180 ? randomRange(20, 35) : randomRange(-35, -20);
+  const coolShift = hue < 90 ? randomRange(25, 35) : randomRange(-25, -35);
   const cooled = rotateHue(baseColor, coolShift);
-  return [
-    baseColor,
-    mix(baseColor, cooled, 0.5),
-    cooled,
-    desaturate(cooled, 0.1)
-  ];
+  const transition = createTransition(baseColor, cooled, 2);
+  
+  return balanceBrightness([enhanceColor(baseColor), ...transition.slice(1)]);
 };
 
 const generateEarthy = (baseColor: string): string[] => {
-  const createEarthy = (c: string, desatAmount: number = 0.4) => 
-    desaturate(mix(c, darken(c, randomRange(0.05, 0.12)), 0.7), desatAmount);
+  const angle1 = randomRange(12, 20);
+  const angle2 = randomRange(8, 15);
   
-  return [
-    createEarthy(baseColor, 0.35),
-    createEarthy(lighten(baseColor, 0.08), 0.3),
-    createEarthy(createHarmoniousVariation(baseColor, randomRange(15, 25), 'none'), 0.4),
-    createEarthy(darken(baseColor, 0.08), 0.45)
+  // Create grounded, natural palette
+  const earth1 = darken(desaturate(baseColor, 0.38), 0.18);
+  const earth2 = darken(desaturate(rotateHue(baseColor, angle1), 0.35), 0.15);
+  const earth3 = desaturate(rotateHue(baseColor, -angle2), 0.4);
+  const earthBase = desaturate(baseColor, 0.25);
+  
+  const palette = [
+    earthBase,
+    earth1,
+    earth2,
+    earth3
   ];
+  
+  return balanceBrightness(palette);
 };
 
 // Main gradient generator using color theory
